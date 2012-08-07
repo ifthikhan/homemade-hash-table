@@ -2,12 +2,12 @@
 #define HOMEMADE_HASH_TABLE_H
 
 
-#define HASH_TABLE_SIZE     100
+#define HASH_TABLE_SIZE     101
 
 /**
- * A wrapper data structure to store the key/value pairs.
- * It's a DoublyLinkedList and is required to implement open addressing which
- * solves hash collisions.
+ * A wrapper data structure to store the key/value pairs. It's a
+ * DoublyLinkedList and is required to implement open addressing
+ * which solves hash collisions.
  */
 typedef struct hash_v {
     char *key;
@@ -24,8 +24,7 @@ typedef struct hash_t {
 
 hash_table ht_new();
 void ht_set_value(char* key, void* value, hash_table* table);
-void* ht_get_value(char* key, hash_table* table);
 void ht_delete_value(char* key, hash_table* table);
-
+void* ht_get_value(char* key, hash_table* table);
 
 #endif
