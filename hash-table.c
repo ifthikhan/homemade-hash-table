@@ -57,30 +57,6 @@ void ht_set_value(char* key, void* value, hash_table* table) {
     }
 }
 
-/*
- * Deleting a node from the doubly linked list needs to take
- * care of the following cases:
- *      # First: The node to be deleted is the first element.
- *      In this case the next hval has to be made the head of the dll.
- *      # Last: The node to be deleted is the last element.
- *      The pointer of the previous hval's next has to refer to NULL.
- *      # Between: The element is in between two elements.
- *      The next and the previous pointers of the hvals on either side
- *      needs to changed.
- */
-static void deletefrom_dll(hval* node) {
-
-    if (node->previous == NULL) {
-        node->next->previous = NULL;
-    } else if (node->next == NULL) {
-        node->previous->next = NULL;
-    } else {
-        node->previous->next = node->next;
-        node->next->previous = node->previous;
-    }
-
-    free(node);
-}
 
 /**
  * Return the value for the given key, if the key
@@ -172,6 +148,31 @@ static void appendto_dll(hval* node, hval* head) {
         head->next = node;
         node->previous = head;
     }
+}
+
+/*
+ * Deleting a node from the doubly linked list needs to take
+ * care of the following cases:
+ *      # First: The node to be deleted is the first element.
+ *      In this case the next hval has to be made the head of the dll.
+ *      # Last: The node to be deleted is the last element.
+ *      The pointer of the previous hval's next has to refer to NULL.
+ *      # Between: The element is in between two elements.
+ *      The next and the previous pointers of the hvals on either side
+ *      needs to changed.
+ */
+static void deletefrom_dll(hval* node) {
+
+    if (node->previous == NULL) {
+        node->next->previous = NULL;
+    } else if (node->next == NULL) {
+        node->previous->next = NULL;
+    } else {
+        node->previous->next = node->next;
+        node->next->previous = node->previous;
+    }
+
+    free(node);
 }
 
 static unsigned get_index(char* key, unsigned max_val) {
