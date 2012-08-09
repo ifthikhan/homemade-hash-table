@@ -2,12 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "hash-table.h"
-
-
-void random_string(char* string, unsigned max_len);
-void get_value_and_print(char* key, hash_table* table);
-void print_hash_table(hash_table* ht);
-
+#include "main.h"
 
 int main() {
 
@@ -24,14 +19,13 @@ int main() {
     ht_set_value(k2, &v2, &ht);
 
     unsigned i,
-             iterations = 200,
-             max_len = 10;
+             iterations = 200;
     char keys[iterations][10];
     unsigned vals[iterations];
     for (i = 0; i < iterations; i++) {
         vals[i] = i;
         random_string(keys[i], 9);
-        ht_set_value(keys[i], (void *)(vals + i), &ht);
+        ht_set_value(&ht, keys[i], (void *)(vals + i));
     }
 
     print_hash_table(&ht);
@@ -54,7 +48,7 @@ void random_string(char* string, unsigned max_len) {
 
 void get_value_and_print(char* key, hash_table* table) {
 
-    int v = *((int *) ht_get_value(key, table));
+    int v = *((int *) ht_get_value(table, key));
     printf("%d \n", v);
 }
 
@@ -89,7 +83,7 @@ void print_hash_table(hash_table* ht) {
         index_num_elements[i] = num_elements;
     }
 
-    /*for (i = 0; i < ht->size; i++) {*/
-        /*printf("%d,%d \n", i, index_num_elements[i]);*/
-    /*}*/
+    for (i = 0; i < ht->size; i++) {
+        printf("%d,%d \n", i, index_num_elements[i]);
+    }
 }

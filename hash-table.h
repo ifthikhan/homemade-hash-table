@@ -23,8 +23,8 @@ typedef struct hash_t {
 
 
 hash_table ht_new();
-void ht_set_value(char* key, void* value, hash_table* table);
-void ht_delete_value(char* key, hash_table* table);
-void* ht_get_value(char* key, hash_table* table);
+void ht_set_value(hash_table* table, char* key, void* value);
+void ht_delete_value(hash_table* table, char* key);
+void* ht_get_value(hash_table* table, char* key);
 
 #endif

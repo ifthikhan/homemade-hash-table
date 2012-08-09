@@ -39,7 +39,7 @@ hash_table ht_new() {
  * Set the key/value pair. Currently only strings (char arrays) are allowed as
  * keys.
  */
-void ht_set_value(char* key, void* value, hash_table* table) {
+void ht_set_value(hash_table* table, char* key, void* value) {
 
     unsigned index = get_index(key, table->size);
     hval* head = table->values[index];
@@ -62,7 +62,7 @@ void ht_set_value(char* key, void* value, hash_table* table) {
  * Return the value for the given key, if the key
  * is not found NULL is returned.
  */
-void* ht_get_value(char* key, hash_table* table) {
+void* ht_get_value(hash_table* table, char* key) {
 
     unsigned index = get_index(key, table->size);
 
@@ -81,7 +81,7 @@ void* ht_get_value(char* key, hash_table* table) {
 /**
  * Deletes the key/value for the given key from the table.
  */
-void ht_delete_value(char* key, hash_table* table) {
+void ht_delete_value(hash_table* table, char* key) {
 
     unsigned index = get_index(key, table->size);
 
