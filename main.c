@@ -12,11 +12,11 @@ int main() {
 
     char *k1 = "2WwtnwoDx";
     int v1 = 10;
-    ht_set_value(k1, &v1, &ht);
+    ht_set_value(&ht, k1, &v1);
 
     char *k2 = "2Uiihmi2/";
     int v2 = 20;
-    ht_set_value(k2, &v2, &ht);
+    ht_set_value(&ht, k2, &v2);
 
     unsigned i,
              iterations = 200;

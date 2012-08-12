@@ -3,10 +3,15 @@
 #include <string.h>
 #include "hash-table.h"
 
+typedef char boolean;
+
 static hval* hval_new(char* key, void* value);
 static hval* search_dll(char* key, hval* head);
-static void appendto_dll(hval* node, hval* head);
-static void deletefrom_dll(hval* node);
+static void dll_append_to(hval* node, hval* head);
+static void dll_delete_from(hval* node);
+static boolean dll_is_head(hval* node);
+static boolean dll_is_tail(hval* node);
+static boolean dll_is_single(hval * node);
 static unsigned get_index(char* key, unsigned max_val);
 static unsigned simple_hash_generator(char* key);
 
@@ -52,7 +57,7 @@ void ht_set_value(hash_table* table, char* key, void* value) {
             found->value = value;
         } else {
             hval* node = hval_new(key, value);
-            appendto_dll(node, head);
+            dll_append_to(node, head);
         }
     }
 }
@@ -75,7 +80,7 @@ void* ht_get_value(hash_table* table, char* key) {
         node = node->next;
     }
 
-    return node->value;
+    return (node) ? node->value : NULL;
 }
 
 /**
@@ -88,16 +93,16 @@ void ht_delete_value(hash_table* table, char* key) {
     hval* node = table->values[index];
     while (node) {
         if (strcmp(node->key, key) == 0) {
-            /*
-             * If it's first element then save the pointer of
-             * the next element in the hash table.
-             */
-            if (node->previous == NULL && node->next) {
+
+            if (dll_is_single(node)) {
+                table->values[index] = NULL;
+            } else if (dll_is_head(node)) {
                 table->values[index] = node->next;
             }
-            deletefrom_dll(node);
+            dll_delete_from(node);
             break;
         }
+        node = node->next;
     }
 }
 
@@ -140,32 +145,23 @@ static hval* search_dll(char* key, hval* head) {
     return node;
 }
 
-static void appendto_dll(hval* node, hval* head) {
+static void dll_append_to(hval* node, hval* head) {
 
     if (head->next) {
-        appendto_dll(node, head->next);
+        dll_append_to(node, head->next);
     } else {
         head->next = node;
         node->previous = head;
     }
 }
 
-/*
- * Deleting a node from the doubly linked list needs to take
- * care of the following cases:
- *      # First: The node to be deleted is the first element.
- *      In this case the next hval has to be made the head of the dll.
- *      # Last: The node to be deleted is the last element.
- *      The pointer of the previous hval's next has to refer to NULL.
- *      # Between: The element is in between two elements.
- *      The next and the previous pointers of the hvals on either side
- *      needs to changed.
- */
-static void deletefrom_dll(hval* node) {
+static void dll_delete_from(hval* node) {
 
-    if (node->previous == NULL) {
+    if (dll_is_single(node)) {
+        ;
+    } else if (dll_is_head(node)) {
         node->next->previous = NULL;
-    } else if (node->next == NULL) {
+    } else if (dll_is_tail(node)) {
         node->previous->next = NULL;
     } else {
         node->previous->next = node->next;
@@ -173,6 +169,21 @@ static void deletefrom_dll(hval* node) {
     }
 
     free(node);
+}
+
+static boolean dll_is_head(hval* node) {
+
+    return (node->previous == NULL) ? 1 : 0;
+}
+
+static boolean dll_is_tail(hval* node) {
+
+    return (node->next == NULL) ? 1 : 0;
+}
+
+static boolean dll_is_single(hval * node) {
+
+    return (node->next == NULL && node->previous == NULL) ? 1 : 0;
 }
 
 static unsigned get_index(char* key, unsigned max_val) {
